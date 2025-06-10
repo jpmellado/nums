@@ -15,7 +15,7 @@ def fdm1_e121(f):
 # Output arguments:
 #    - d: approximations to the derivative of the function at the grid points 
     n = np.size(f)
-    d = np.empty(n)
+    d = np.empty_like(f)
     
     d[0] = f[1] -f[0]
     for i in range(1,n-1):
@@ -35,7 +35,7 @@ def fdm1_e2p(f):
 # Output arguments:
 #    - d: approximations to the derivative of the function at the grid points 
     n = np.size(f)
-    d = np.empty(n)
+    d = np.empty_like(f)
     
     # use the python feature that negative index indicates distance to last
     for i in range(n-1):
@@ -53,7 +53,7 @@ def fdm1_e11(f):
 # Output arguments:
 #    - d: approximations to the derivative of the function at the grid points 
     n = np.size(f)
-    d = np.empty(n)
+    d = np.empty_like(f)
     
     for i in range(0,n-1):
         d[i] = f[i+1]-f[i]
@@ -70,7 +70,7 @@ def fdm1_e11(f):
 # Output arguments:
 #    - d: approximations to the derivative of the function at the grid points 
     n = np.size(f)
-    d = np.empty(n)
+    d = np.empty_like(f)
     
     for i in range(n-1):
         d[i] = f[i+1]-f[i]
@@ -86,7 +86,7 @@ def fdm1_e1p(f):
 # Output arguments:
 #    - d: approximations to the derivative of the function at the grid points 
     n = np.size(f)
-    d = np.empty(n)
+    d = np.empty_like(f)
     
     for i in range(n-1):
         d[i] = f[i+1]-f[i]
@@ -104,7 +104,7 @@ def fdm2_e121(f):
 # Output arguments:
 #    - d: approximations to the derivative of the function at the grid points 
     n = np.size(f)
-    d = np.empty(n)
+    d = np.empty_like(f)
     
     d[0] = f[2] -2. *f[1] +f[0]
     for i in range(1,n-1):
@@ -123,7 +123,7 @@ def fdm2_e2p(f):
 # Output arguments:
 #    - d: approximations to the derivative of the function at the grid points 
     n = np.size(f)
-    d = np.empty(n)
+    d = np.empty_like(f)
     
     # use the python feature that negative index indicates distance to last
     for i in range(n-1):
@@ -162,7 +162,7 @@ def fdm1_c6_rhs(f):
 # Output arguments:
 #    - d: vector with the right-hand side of the system
     n = np.size(f)
-    d = np.empty(n)
+    d = np.empty_like(f)
     
     d[0] = -5./2. *f[0] +2.0 *f[1] +0.5 *f[2]
     d[1] = -5./9. *f[0] -0.5 *f[1] +     f[2] +1./18. *f[3]
