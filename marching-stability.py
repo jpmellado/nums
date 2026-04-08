@@ -11,8 +11,8 @@ import matplotlib.pyplot as plt
 from template import *
 
 TypesToShow = []
-# TypesToShow += ['regions']
-TypesToShow += ['fdm-eigenvalues']
+TypesToShow += ['regions']
+# TypesToShow += ['fdm-eigenvalues']
 
 ###############################################################################
 # Definitions
@@ -23,6 +23,9 @@ def rEuler(w):
 
 def rEulerInverse(w):
     return 1. /( 1. - w )
+
+def rTrapezoidal(w):
+    return (1.+0.5*w) /( 1. - 0.5*w )
 
 def rLeapFrog(w):
     return w +np.sqrt( 1. + w **2.), w -np.sqrt( 1. + w **2.)
@@ -162,6 +165,17 @@ if tag in TypesToShow:
     plt.savefig("{}.pdf".format('error-'+name),bbox_inches='tight')
 
     # ---------------------------------
+    name = 'Trapezoidal'
+    r = rTrapezoidal(w)
+    limits = []
+
+    PlotRegion(w,np.abs(r),name,limits)
+    plt.savefig("{}.pdf".format('region-'+name),bbox_inches='tight')
+
+    PlotError(w,np.abs(r),r/np.exp(w),name)
+    plt.savefig("{}.pdf".format('error-'+name),bbox_inches='tight')
+
+    # ---------------------------------
     #name = 'Leap-Frog'
     #r1 = w +np.sqrt( 1. + w **2.)
     #r2 = w -np.sqrt( 1. + w **2.)
@@ -205,9 +219,19 @@ if tag in TypesToShow:
     plt.savefig("{}.pdf".format('error-'+name),bbox_inches='tight')
 
     # ---------------------------------
-    # name = 'RungeKutta45'
-    # r = rRungeKutta45(w)
-    # limits = []
+    name = 'RungeKutta45'
+    r = rRungeKutta45(w)
+    limits = [ [0,3.34], [0, -3.34], [ -4.65,0] ]
+
+    PlotRegion(w,np.abs(r),name,limits)
+    plt.savefig("{}.pdf".format('region-'+name),bbox_inches='tight')
+
+    # plt.title(r"Equation $u''+u=0$. Runge-Kutta 4/5.")
+    # PlotEigenvalues(lambdas=[ -1.0 *1j, -0.5 *1j, 0.5 *1j, 1.0 *1j])
+    # plt.savefig("{}.pdf".format('eigenvalues-'+name+'Oscillation'),bbox_inches='tight')
+
+    PlotError(w,np.abs(r),r/np.exp(w),name)
+    plt.savefig("{}.pdf".format('error-'+name),bbox_inches='tight')
 
 #%% Calculate eigenvalues of Jacobian
 ###############################################################################
