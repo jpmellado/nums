@@ -9,11 +9,11 @@ import matplotlib.pyplot as plt
 from template import *
 
 TypesToShow = []
-# TypesToShow += ['bvp']
+# TypesToShow += ['bvp1d']
 TypesToShow += ['bvp2d']
 
 ###############################################################################
-tag = 'bvp'
+tag = 'bvp1d'
 if tag in TypesToShow:
     fig_id = 0
 
