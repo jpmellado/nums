@@ -7,7 +7,8 @@ import numpy as np
 import scipy.linalg
 import matplotlib.pyplot as plt
 from template import *
-import nums.fdm
+import pynums.fdms.fdm1 as fdms1
+import pynums.fdms.fdm2 as fdms2
 
 # Figure names and counter
 tag = 'derivatives'
@@ -59,7 +60,7 @@ fig = plt.figure( figsize = figsize11 )
 [ plt.plot(x, f[2], label=f[0]) for f in fs ]
 
 plt.gca().set_prop_cycle(None)
-fdm1 = [ nums.fdm.fdm1_e121(f[1]) /h for f in fs ]
+fdm1 = [ fdms1.fdm1_e121(f[1]) /h for f in fs ]
 [ plt.plot(x, y, 'o') for y in fdm1 ]
 
 plt.title("First-order derivative")
@@ -69,7 +70,7 @@ plt.legend(loc="best")
 plt.grid()
 plt.tight_layout(pad=0.1)
 
-plt.savefig("{}.pdf".format(tag+str(fig_id)),bbox_inches='tight')
+plt.savefig("{}.pdf".format(tag+'-'+str(fig_id)),bbox_inches='tight')
 
 #################################################
 #%% Calculate FD approximation to the second-order derivative
@@ -79,7 +80,7 @@ fig = plt.figure( figsize = figsize11 )
 [ plt.plot(x, f[3], label=f[0]) for f in fs ]
 
 plt.gca().set_prop_cycle(None)
-fdm2 = [ nums.fdm.fdm2_e121(f[1]) /h**2. for f in fs ]
+fdm2 = [ fdms2.fdm2_e121(f[1]) /h**2. for f in fs ]
 [ plt.plot(x, y, 'o') for y in fdm2 ]
 
 plt.title("Second-order derivative")
@@ -89,7 +90,7 @@ plt.legend(loc="best")
 plt.grid()
 plt.tight_layout(pad=0.1)
 
-plt.savefig("{}.pdf".format(tag+str(fig_id)),bbox_inches='tight')
+plt.savefig("{}.pdf".format(tag+'-'+str(fig_id)),bbox_inches='tight')
 
 #################################################
 #%% Convergence study: we increment the number of grid points n by factors of 2
@@ -110,20 +111,20 @@ for i in range(4,11):
     # Define list of functions to be processed
     fs = [ exp_(x), sin_(x), cos_(x), gauss_(x)]
     # Calculate FD approximation to the first-order derivative and error
-    fdm1s = [ nums.fdm.fdm1_e121(f[1]) /h[-1] for f in fs ]
+    fdm1s = [ fdms1.fdm1_e121(f[1]) /h[-1] for f in fs ]
     e1s.append( [ scipy.linalg.norm(fdm1s[i]-fs[i][2]) /np.sqrt(float(n)) for i in range(len(fdm1s)) ] )
 #    e1s.append( [ np.amax(np.abs(fdm1s[i]-fs[i][2])) for i in range(len(fdm1s)) ] )
     # Calculate FD approximation to the second-order derivative
-    fdm2s = [ nums.fdm.fdm2_e121(f[1]) /h[-1]**2. for f in fs ]
+    fdm2s = [ fdms2.fdm2_e121(f[1]) /h[-1]**2. for f in fs ]
     e2s.append( [ scipy.linalg.norm(fdm2s[i]-fs[i][3]) /np.sqrt(float(n)) for i in range(len(fdm2s)) ] )
 #    e2s.append( [ np.amax(np.abs(fdm2s[i]-fs[i][3])) for i in range(len(fdm2s)) ] )
 
     # Add one case with periodic boundary conditions
     f = cos_(x[:-1])
-    fdm1 = nums.fdm.fdm1_e2p(f[1]) /h[-1]
+    fdm1 = fdms1.fdm1_e2p(f[1]) /h[-1]
     e1s[-1] += [ scipy.linalg.norm(fdm1-f[2]) /np.sqrt(float(n)) ]
 #    e1s[-1] += [ np.amax(np.abs(fdm1-f[2])) ]
-    fdm2 = nums.fdm.fdm2_e2p(f[1]) /h[-1] **2.0
+    fdm2 = fdms2.fdm2_e2p(f[1]) /h[-1] **2.0
     e2s[-1] += [ scipy.linalg.norm(fdm2-f[3]) /np.sqrt(float(n)) ]
 #    e2s[-1] += [ np.amax(np.abs(fdm2-f[3])) ]
 
@@ -144,7 +145,7 @@ plt.ylabel("Global error $e_2/e_{2,0}$")
 plt.grid()
 plt.tight_layout(pad=0.1)
 
-plt.savefig("{}.pdf".format(tag+str(fig_id)),bbox_inches='tight')
+plt.savefig("{}.pdf".format(tag+'-'+str(fig_id)),bbox_inches='tight')
 
 fig_id = fig_id +1
 fig = plt.figure( figsize = figsize11 )
@@ -163,7 +164,7 @@ plt.ylabel(r"Global error $e_2/e_{2,0}$")
 plt.grid()
 plt.tight_layout(pad=0.1)
 
-plt.savefig("{}.pdf".format(tag+str(fig_id)),bbox_inches='tight')
+plt.savefig("{}.pdf".format(tag+'-'+str(fig_id)),bbox_inches='tight')
 
 #################################################
 #%% Plots for the slides
@@ -181,7 +182,7 @@ plt.ylabel(r"modified wavenumber $\tilde{w}_k$")
 plt.grid()
 plt.tight_layout(pad=0.1)
 
-plt.savefig("{}.pdf".format(tag+str(fig_id)),bbox_inches='tight')
+plt.savefig("{}.pdf".format(tag+'-'+str(fig_id)),bbox_inches='tight')
 
 #################################################
 plt.show()
