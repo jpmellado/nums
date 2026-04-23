@@ -5,6 +5,7 @@
 `mkdir build`  
 `cd build`  
 `gfortran -c ../fnums_constants.f90`  
+`gfortran -c ../numpy.f90`  
 `gfortran -c ../fdms/fdm1.f90`  
-`...`
-`gfortran main.f90 fdm1.o fdm2.o`
+`...`  
+`gfortran main.f90 numpy.o fdm1.o fdm2.o ...`

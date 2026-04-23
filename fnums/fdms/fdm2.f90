@@ -21,10 +21,9 @@ contains
 ! Output arguments:
 !    - d: approximations to the derivative of the function at the grid points
         real(wp), intent(in) :: f(:)
-        real(wp), allocatable, intent(out) :: d(:)
+        real(wp), intent(out) :: d(:)
 
         n = size(f)
-        allocate (d, mold=f)
 
         i = 1
         d(i) = f(i + 2) - 2.0_wp*f(i + 1) + f(i)
@@ -47,7 +46,6 @@ contains
 ! Output arguments:
 !    - d: approximations to the derivative of the function at the grid points
         real(wp), intent(in) :: f(:)
-        real(wp), allocatable, intent(out) :: d(:)
 
         n = size(f)
         allocate (d, mold=f)
