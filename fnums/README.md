@@ -4,8 +4,10 @@
 
 `mkdir build`  
 `cd build`  
-`gfortran -c ../fnums_constants.f90`  
-`gfortran -c ../numpy.f90`  
-`gfortran -c ../fdms/fdm1.f90`  
+`gfortran -c path_to/fnums_constants.f90`  
+`gfortran -c path_to/numpy.f90`  
+`gfortran -c path_to/fdms/fdm1.f90`  
 `...`  
 `gfortran main.f90 numpy.o fdm1.o fdm2.o ...`
+
+To clean the tree, simply remove the build directory.

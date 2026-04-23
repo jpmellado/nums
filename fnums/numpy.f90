@@ -6,6 +6,7 @@ module numpy
     private
 
     public :: linspace
+    public :: meshgrid
 
 contains
     !########################################################################
@@ -23,6 +24,28 @@ contains
         step = (end - start)/real(num_points - 1, wp)
         do i = 1, num_points
             result(i) = step*real(i - 1, wp)
+        end do
+
+        return
+    end subroutine
+
+    !########################################################################
+    !########################################################################
+    subroutine meshgrid(x, y, x2d, y2d)
+        real(wp), intent(in) :: x(:), y(:)
+        real(wp), allocatable, intent(out) :: x2d(:, :), y2d(:, :)
+
+        integer i, j
+
+        allocate (x2d(size(x), size(y)))
+        allocate (y2d(size(x), size(y)))
+
+        do j = 1, size(y)
+            x2d(:, j) = x(:)
+        end do
+
+        do i = 1, size(x)
+            y2d(i, :) = y(:)
         end do
 
         return

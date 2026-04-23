@@ -25,11 +25,7 @@ program velocity
     call linspace(-1.0_wp, 1.0_wp, ny, result=y)
     hy = (y(ny) - y(1))/real(ny - 1, wp)
 
-    ! to be done
-    ! call meshgrid(x, y, xc, yc)
-    allocate (xc(nx, ny))
-    allocate (yc(nx, ny))
-    ! this allocation can be done within meshgrid; this was just for checking
+    call meshgrid(x, y, xc, yc)
 
     ! Create object for the partial derivatives
     call partial_1%initialize(scheme=fdm1_e121, step_x=hx, step_y=hy)
