@@ -20,17 +20,19 @@ contains
 !    - f: values of the function at the grid points
 ! Output arguments:
 !    - d: approximations to the derivative of the function at the grid points
-        real(wp), intent(in) :: f(0:)
+        real(wp), intent(in) :: f(:)
         real(wp), allocatable, intent(out) :: d(:)
 
         n = size(f)
         allocate (d, mold=f)
 
-        d(0) = f(2) - 2.0_wp*f(1) + f(0)
-        do i = 1, n - 2
+        i = 1
+        d(i) = f(i + 2) - 2.0_wp*f(i + 1) + f(i)
+        do i = 2, n - 1
             d(i) = f(i + 1) - 2.0_wp*f(i) + f(i - 1)
         end do
-        d(n - 1) = f(n - 1) - 2.0_wp*f(n - 2) + f(n - 3)
+        i = n
+        d(i) = f(i) - 2.0_wp*f(i - 1) + f(i - 2)
 
         return
     end subroutine
@@ -44,17 +46,19 @@ contains
 !    - f: values of the function at the grid points
 ! Output arguments:
 !    - d: approximations to the derivative of the function at the grid points
-        real(wp), intent(in) :: f(0:)
+        real(wp), intent(in) :: f(:)
         real(wp), allocatable, intent(out) :: d(:)
 
         n = size(f)
         allocate (d, mold=f)
 
-        d(0) = f(1) - 2.0_wp*f(0) + f(n)
-        do i = 1, n - 2
+        i = 1
+        d(i) = f(i + 1) - 2.0_wp*f(i) + f(n)
+        do i = 2, n - 1
             d(i) = f(i + 1) - 2.0_wp*f(i) + f(i - 1)
         end do
-        d(n - 1) = f(0) - 2.0_wp*f(n - 1) + f(n - 2)
+        i = n
+        d(i) = f(1) - 2.0_wp*f(i) + f(i - 1)
 
         return
     end subroutine

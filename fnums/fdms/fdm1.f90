@@ -22,17 +22,19 @@ contains
 !    - f: values of the function at the grid points
 ! Output arguments:
 !    - d: approximations to the derivative of the function at the grid points
-        real(wp), intent(in) :: f(0:)
+        real(wp), intent(in) :: f(:)
         real(wp), allocatable, intent(out) :: d(:)
 
         n = size(f)
         allocate (d, mold=f)
 
-        d(0) = f(1) - f(0)
-        do i = 1, n - 2
+        i = 1
+        d(i) = f(i + 1) - f(i)
+        do i = 2, n - 1
             d(i) = 0.5_wp*(f(i + 1) - f(i - 1))
         end do
-        d(n - 1) = f(n - 1) - f(n - 2)
+        i = n
+        d(i) = f(i) - f(i - 1)
 
         return
     end subroutine
@@ -47,18 +49,19 @@ contains
 !    - f: values of the function at the grid points
 ! Output arguments:
 !    - d: approximations to the derivative of the function at the grid points
-        real(wp), intent(in) :: f(0:)
+        real(wp), intent(in) :: f(:)
         real(wp), allocatable, intent(out) :: d(:)
 
         n = size(f)
         allocate (d, mold=f)
 
-        ! use the python feature that negative index indicates distance to last
-        d(0) = 0.5_wp*(f(1) - f(n - 1))
-        do i = 1, n - 2
+        i = 1
+        d(i) = 0.5_wp*(f(i + 1) - f(n))
+        do i = 2, n - 1
             d(i) = 0.5_wp*(f(i + 1) - f(i - 1))
         end do
-        d(n - 1) = 0.5_wp*(f(0) - f(n - 2))
+        i = n
+        d(i) = 0.5_wp*(f(1) - f(i - 1))
 
         return
     end subroutine
@@ -71,16 +74,17 @@ contains
 !    - f: values of the function at the grid points
 ! Output arguments:
 !    - d: approximations to the derivative of the function at the grid points
-        real(wp), intent(in) :: f(0:)
+        real(wp), intent(in) :: f(:)
         real(wp), allocatable, intent(out) :: d(:)
 
         n = size(f)
         allocate (d, mold=f)
 
-        do i = 0, n - 2
+        do i = 1, n - 1
             d(i) = f(i + 1) - f(i)
         end do
-        d(n - 1) = f(n - 1) - f(n - 2)
+        i = n
+        d(i) = f(i) - f(i - 1)
 
         return
     end subroutine
@@ -92,16 +96,17 @@ contains
 !    - f: values of the function at the grid points
 ! Output arguments:
 !    - d: approximations to the derivative of the function at the grid points
-        real(wp), intent(in) :: f(0:)
+        real(wp), intent(in) :: f(:)
         real(wp), allocatable, intent(out) :: d(:)
 
         n = size(f)
         allocate (d, mold=f)
 
-        do i = 0, n - 2
+        do i = 1, n - 1
             d(i) = f(i + 1) - f(i)
         end do
-        d(n - 1) = f(0) - f(n - 1)
+        i = n
+        d(i) = f(1) - f(i)
 
         return
     end subroutine
