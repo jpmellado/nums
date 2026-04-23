@@ -11,7 +11,10 @@ program velocity
     integer ny
     real(wp), allocatable :: y(:), yc(:, :)
     real(wp) :: hy
+
     type(partial_dt) :: partial_1, partial_2
+
+    real(wp), allocatable :: psi(:, :), u(:, :), v(:, :)
 
     ! Create grid
     nx = 50
@@ -22,13 +25,22 @@ program velocity
     call linspace(-1.0_wp, 1.0_wp, ny, result=y)
     hy = (y(ny) - y(1))/real(ny - 1, wp)
 
+    ! to be done
     ! call meshgrid(x, y, xc, yc)
+    allocate (xc(nx, ny))
+    allocate (yc(nx, ny))
+    ! this allocation can be done within meshgrid; this was just for checking
 
     ! Create object for the partial derivatives
     call partial_1%initialize(scheme=fdm1_e121, step_x=hx, step_y=hy)
     call partial_2%initialize(scheme=fdm1_e121, step_x=hx*hx, step_y=hy*hy)
 
-    ! to be continued
+    ! Create stream function
+    psi = xc*(1.0_wp - xc)*yc*(1.0_wp - yc)
+
+    call partial_1%dy(psi, u)
+    call partial_1%dx(psi, v)
+    v(:, :) = -v(:, :)
 
     stop
 end program
