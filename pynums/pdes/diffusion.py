@@ -1,5 +1,5 @@
 import numpy as np
-import nums.fdm
+from pynums.fdms.fdm2 import *
 
 if __name__ != "__main__":
     from __main__ import x, h, diffusivity
@@ -15,7 +15,7 @@ def bcs(u,t):             # Boundary conditions, nothing to be done
 def rhs(u,t):             # Right-hand side of evolution equation (tendency)
     f = np.empty(np.size(x))
     f = 1.                                  # Source term: constant
-    f = diffusivity *nums.fdm.fdm2_e121(u) /( h **2. ) +f
+    f = diffusivity *fdm2_e121(u) /( h **2. ) +f
     f[ 0] = 0.                              # Calculate boundary conditions; Dirichlet
     f[-1] = 0.                              # Boundary nodes in state vector, set by initial condition, keep them fixed
     return f

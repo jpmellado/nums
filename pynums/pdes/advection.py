@@ -1,5 +1,5 @@
 import numpy as np
-import nums.fdm
+from pynums.fdms.fdm1 import *
 
 if __name__ != "__main__":
     from __main__ import x, h, velocity
@@ -19,7 +19,7 @@ def rhs(u,t):                      # Right-hand side of evolution equation (tend
     n = np.size(x)
     f = np.empty(n)    
     bcs(u,t)                       # Ensure bcs; necessary for substages in RK
-    f = -velocity *nums.fdm.fdm1_e121(u) /h 
+    f = -velocity *fdm1_e121(u) /h 
     f[0] = 0.                      # Calculate boundary conditions; Dirichlet at left boundary
     return f
 

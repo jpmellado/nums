@@ -1,5 +1,5 @@
 import numpy as np
-import nums.fdm
+from pynums.fdms.fdm1 import *
 
 if __name__ != "__main__":
     from __main__ import x, h, velocity
@@ -17,7 +17,7 @@ def bcs(u,t):                   # Boundary conditions, nothing to be done
 def rhs(u,t):                   # Right-hand side of evolution equation (tendency)
     n = np.size(x)
     f = np.empty(n)    
-    f[:n-1] = -velocity *nums.fdm.fdm1_e2p(u[:n-1]) /h
+    f[:n-1] = -velocity *fdm1_e2p(u[:n-1]) /h
     f[n-1] = f[0]               # Calculate boundary conditions; periodic
     return f
 

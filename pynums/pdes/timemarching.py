@@ -1,6 +1,6 @@
 import numpy as np
 
-# Define time-marching schemes
+# Define time-marching schemes to advance one single step
 
 if __name__ != "__main__":
     from __main__ import dt

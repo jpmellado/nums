@@ -1,5 +1,6 @@
 import numpy as np
-import nums.fdm
+from pynums.fdms.fdm1 import *
+from pynums.fdms.fdm2 import *
 
 if __name__ != "__main__":
     from __main__ import x, h, velocity, diffusivity
@@ -18,7 +19,7 @@ def rhs(u,t):             # Right-hand side of evolution equation (tendency)
     n = np.size(x)
     f = np.empty(n)    
     bcs(u,t)                                # Ensure bcs; necessary for substages in RK
-    f = -velocity *(1-x) *nums.fdm.fdm1_e121(u) /h +diffusivity *nums.fdm.fdm2_e121(u) /( h **2. ) 
+    f = -velocity *(1-x) *fdm1_e121(u) /h +diffusivity *fdm2_e121(u) /( h **2. ) 
     f[ 0] = 0.                              # Bcs: no change imposed here             
     f[-1] = 0.
     return f
