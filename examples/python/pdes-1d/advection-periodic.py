@@ -31,7 +31,6 @@ def reference(x):
 def preprocessing():
     # Construct grid (periodic)
     x = np.linspace(xmin, xmax, nx + 1)[:-1]
-    print(np.size(x), x[-1])
 
     # Construct initial condition
     u = reference(x)
