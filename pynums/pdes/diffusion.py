@@ -12,8 +12,10 @@ def ics(x):               # Initial conditions
 def bcs(u,t):             # Boundary conditions, nothing to be done
     return
 
+# Using second-order approximations to spatial derivatives
+# Maximum diffusion number is realMax/4
 def rhs(u,t):             # Right-hand side of evolution equation (tendency)
-    f = np.empty(np.size(x))
+    f = np.empty_like(u)
     f = 1.                                  # Source term: constant
     f = diffusivity *fdm2_e121(u) /( h **2. ) +f
     f[ 0] = 0.                              # Calculate boundary conditions; Dirichlet
