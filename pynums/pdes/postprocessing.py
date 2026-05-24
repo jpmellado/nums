@@ -4,6 +4,7 @@ from template import *
 
 plt.rcParams["axes.spines.top"] = False
 plt.rcParams["axes.spines.right"] = False
+plt.rcParams["legend.fontsize"] = "small"
 
 
 def PlotCurves(x, data):
@@ -19,8 +20,14 @@ def PlotCurves(x, data):
             color="darkred",
             alpha=factor,
             label=r"time $t={:5.2f}$".format(data.tchecked[item]),
+            clip_on=False,
         )
 
+    axs.spines["left"].set_position(("axes", -0.03))
+    axs.spines["bottom"].set_position(("axes", -0.03))
+    # axs.xaxis.set_major_locator(plt.MaxNLocator(5))
+    axs.set_xlim([x[0], x[-1]])
+    axs.set_xticks(np.linspace(x[0], x[-1], num=5))
     axs.set_xlabel(r"position $x$")
     axs.set_ylabel(r"function $u$")
     plt.legend(loc="best")
