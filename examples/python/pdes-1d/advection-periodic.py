@@ -14,7 +14,7 @@ tcheck = 2.0  # Time interval to checkpoint data
 # Define the spatial grid, uniformly spaced
 xmin = -1.0
 xmax = 1.0
-nx = 20
+nx = 19
 
 # Define the problem
 velocity = 1.0
@@ -29,8 +29,9 @@ def reference(x):
 
 
 def preprocessing():
-    # Construct grid
-    x = np.linspace(xmin, xmax, nx)
+    # Construct grid (periodic)
+    x = np.linspace(xmin, xmax, nx + 1)[:-1]
+    print(np.size(x), x[-1])
 
     # Construct initial condition
     u = reference(x)
@@ -72,6 +73,10 @@ def postprocessing(x, data):
         )
     )
 
+    # overwrite default to handle periodic conditions
+    axs.set_xlim(xmin, xmax)
+    axs.set_xticks(np.linspace(xmin, xmax, num=5))
+
     # Add exact solution as reference
     f = reference(x - velocity * data.tchecked[-1])
 
@@ -84,10 +89,10 @@ def postprocessing(x, data):
 
 
 ###########################################################
-h = (xmax - xmin) / (nx - 1)  # define global variable used below in rhs
+h = (xmax - xmin) / nx  # define global variable used below in rhs
 
 
-def source(x, t):
+def source(x, t):  # periodic source
     s = np.empty_like(x)
     s[:] = 0.0  # no source
     return s
@@ -100,10 +105,7 @@ def rhs(u, t):  # Right-hand side of evolution equation (tendency)
 
     # Using second-order approximations to spatial derivatives
     # Maximum diffusion number is realMax/4
-    f[:-1] = -velocity * fdm1_e2p(u[:-1]) / h + source(x[:-1], t)
-
-    # boundary conditions
-    f[-1] = f[0]  # Calculate boundary conditions; periodic
+    f = -velocity * fdm1_e2p(u) / h + source(x, t)
 
     return f
 
