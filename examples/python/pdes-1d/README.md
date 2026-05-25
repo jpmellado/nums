@@ -1,2 +1,3 @@
-# Examples of Finite Difference Methods for Advection and Diffusion Equations
+# One-dimensional PDEs
 
+Examples of advection and diffusion equations with one spatial dimension

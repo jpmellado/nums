@@ -34,3 +34,21 @@ def PlotCurves(x, data):
     plt.grid()
 
     return fig, axs
+
+
+def PlotContours(grid, data):
+    xc = grid[0]  # for clarity
+    yc = grid[1]
+
+    for item in range(len(data.tchecked)):
+        fig, axs = plt.subplots(1, 1, figsize=figsize11)
+        c = plt.pcolormesh(xc, yc, data.uchecked[item])
+        # c = plt.contour(xc, yc, data.uchecked[item])
+        # plt.colorbar(c) #, label='field')
+        
+    axs.spines["left"].set_position(("axes", -0.03))
+    axs.spines["bottom"].set_position(("axes", -0.03))
+    axs.set_xlabel(r"position $x$")
+    axs.set_ylabel(r"position $y$")
+
+    return fig, axs

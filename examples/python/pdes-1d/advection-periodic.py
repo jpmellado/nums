@@ -100,8 +100,6 @@ def source(x, t):  # periodic source
 def rhs(u, t):  # Right-hand side of evolution equation (tendency)
     from pynums.fdms.fdm1 import fdm1_e2p
 
-    f = np.empty_like(u)
-
     # Using second-order approximations to spatial derivatives
     # Maximum diffusion number is realMax/4
     f = -velocity * fdm1_e2p(u) / h + source(x, t)

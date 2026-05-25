@@ -35,7 +35,8 @@ class RungeKutta3:
         return f, t + self.dt
 
 
-# advection diffusion problems
+###########################################################
+# for advection diffusion problems
 def diffusionNumber(x, diffusivity, dt):
     # Calculate minimum grid step
     h = np.min(np.diff(x))
