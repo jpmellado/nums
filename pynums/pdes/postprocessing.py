@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 from template import *
 
 plt.rcParams["axes.spines.top"] = False
@@ -45,10 +46,32 @@ def PlotContours(grid, data):
         c = plt.pcolormesh(xc, yc, data.uchecked[item])
         # c = plt.contour(xc, yc, data.uchecked[item])
         # plt.colorbar(c) #, label='field')
-        
+
     axs.spines["left"].set_position(("axes", -0.03))
     axs.spines["bottom"].set_position(("axes", -0.03))
     axs.set_xlabel(r"position $x$")
     axs.set_ylabel(r"position $y$")
 
     return fig, axs
+
+
+def AnimContours(grid, data):
+    xc = grid[0]  # for clarity
+    yc = grid[1]
+
+    fig, axs = plt.subplots(1, 1, figsize=figsize11)
+    axs.spines["left"].set_position(("axes", -0.03))
+    axs.spines["bottom"].set_position(("axes", -0.03))
+    axs.set_xlabel(r"position $x$")
+    axs.set_ylabel(r"position $y$")
+
+    cs = []
+    for item in range(len(data.tchecked)):
+        c = plt.pcolormesh(xc, yc, data.uchecked[item], animated=True)
+        if item == 0:
+            plt.pcolormesh(xc, yc, data.uchecked[item])
+        cs.append([c])
+
+    ani = animation.ArtistAnimation(fig, cs, interval=50, blit=True, repeat_delay=1000)
+
+    return fig, axs, ani

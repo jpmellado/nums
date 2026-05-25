@@ -11,7 +11,7 @@ from pynums.pdes.postprocessing import *
 # Define the temporal grid
 tmin = 0.0  # Initial time
 tmax = 2.0  # Final time
-tcheck = 0.5  # Time interval to checkpoint data
+tcheck = 0.05  # Time interval to checkpoint data
 
 # Define the spatial grid, uniformly spaced
 xmin = -1.0
@@ -19,7 +19,7 @@ xmax = 1.0
 nx = 19
 ymin = -1.0
 ymax = 1.0
-ny = 29
+ny = 19
 
 # Define the problem
 velocity = 1.0
@@ -35,7 +35,7 @@ cnum = 0.20  # Choose if you fix diffusion number or time step
 def reference(grid):
     xc = grid[0]  # for clarity
     yc = grid[1]
-    return np.cos(np.pi * xc) * np.cos(2.0 * np.pi * yc)
+    return np.cos(np.pi * xc) * np.cos(np.pi * yc)
 
 
 def preprocessing():
@@ -83,7 +83,7 @@ def postprocessing(grid, data):
     xc = grid[0]  # for clarity
     yc = grid[1]
 
-    fig, axs = PlotContours(grid, data)
+    fig, axs, ani = AnimContours(grid, data)
 
     cnum_x = advectionNumber(xc, velocity, timescheme.dt)  # Calculate values with actual delta_t
     cnum_y = advectionNumber(yc.T, velocity, timescheme.dt)  # Calculate values with actual delta_t
