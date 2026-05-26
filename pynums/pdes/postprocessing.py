@@ -11,8 +11,6 @@ plt.rcParams["legend.fontsize"] = "small"
 def PlotCurves(x, data):
     fig, axs = plt.subplots(1, 1, figsize=figsize11)
 
-    cmap = plt.get_cmap("magma_r")
-
     for item in range(len(data.tchecked)):
         factor = float(item + 1) / float(len(data.tchecked) + 1)
         plt.plot(
@@ -37,20 +35,23 @@ def PlotCurves(x, data):
     return fig, axs
 
 
-def PlotContours(grid, data):
+def PlotContours(grid, data, levels):
     xc = grid[0]  # for clarity
     yc = grid[1]
 
-    for item in range(len(data.tchecked)):
-        fig, axs = plt.subplots(1, 1, figsize=figsize11)
-        c = plt.pcolormesh(xc, yc, data.uchecked[item])
-        # c = plt.contour(xc, yc, data.uchecked[item])
-        # plt.colorbar(c) #, label='field')
-
+    fig, axs = plt.subplots(1, 1, figsize=figsize11)
     axs.spines["left"].set_position(("axes", -0.03))
     axs.spines["bottom"].set_position(("axes", -0.03))
     axs.set_xlabel(r"position $x$")
     axs.set_ylabel(r"position $y$")
+
+    for item in range(len(data.tchecked)):
+        factor = float(item + 1) / float(len(data.tchecked) + 1)
+        c = plt.contour(
+            xc, yc, data.uchecked[item], levels=levels, colors="darkred", alpha=factor
+        )
+        # c = plt.pcolormesh(xc, yc, data.uchecked[item])
+        # plt.colorbar(c) #, label='field')
 
     return fig, axs
 
