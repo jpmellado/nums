@@ -73,9 +73,7 @@ def simulation(grid, u):
 
         if t >= data.time2check:  # Checkpoint data
             data.add(it, t, u)
-            data.time2check = min(
-                data.time2check, tmax
-            )  # To always checkpoint last time
+            data.time2check = min(data.time2check, tmax)  # To always checkpoint last time
 
     return data
 
@@ -87,12 +85,8 @@ def postprocessing(grid, data):
     # fig, axs = PlotContours(grid, data, levels = [0.5])
     fig, axs, ani = AnimContours(grid, data)
 
-    cnum_x = advectionNumber(
-        xc, velocity, timescheme.dt
-    )  # Calculate values with actual delta_t
-    cnum_y = advectionNumber(
-        yc.T, velocity, timescheme.dt
-    )  # Calculate values with actual delta_t
+    cnum_x = advectionNumber(xc, velocity, timescheme.dt)  # Calculate values with actual delta_t
+    cnum_y = advectionNumber(yc.T, velocity, timescheme.dt)  # Calculate values with actual delta_t
     cnum = max(cnum_x, cnum_y)
 
     axs.set_title(
@@ -110,6 +104,20 @@ def postprocessing(grid, data):
     plt.tight_layout(pad=0.1)
     plt.savefig("advection.pdf", bbox_inches="tight")
     plt.show()
+
+
+def save(grid, data):
+    xc = grid[0]  # for clarity
+    yc = grid[1]
+    
+    save_netcdf(
+        data.tchecked,
+        [yc[:, 0], xc[0, :]],
+        ["y", "x"],
+        [data.uchecked],
+        ["u"],
+        "advection",
+    )
 
 
 ###########################################################
@@ -142,14 +150,5 @@ def rhs(u, t):  # Right-hand side of evolution equation (tendency)
 if __name__ == "__main__":
     grid, u = preprocessing()
     data = simulation(grid, u)
-    xc = grid[0]  # for clarity
-    yc = grid[1]
-    save_netcdf(
-        data.tchecked,
-        [yc[:, 0], xc[0, :]],
-        ["y", "x"],
-        [data.uchecked],
-        ["u"],
-        "advection",
-    )
+    save(grid, data)
     postprocessing(grid, data)
