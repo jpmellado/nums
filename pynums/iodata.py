@@ -19,7 +19,7 @@ def save_netcdf(
     # create dimensions for destiny nc-file
     file_dst.createDimension("t", None)
     for ic, coord in enumerate(coords):
-        file_dst.createDimension(coord_names[ic], None)
+        file_dst.createDimension(coord_names[ic], np.size(coord))
 
     # create and write independent variables in destiny nc-file using single precision
     t_dst = file_dst.createVariable("t", "f4", ("t",))
@@ -32,7 +32,13 @@ def save_netcdf(
         var_dst = file_dst.createVariable(
             var_names[iv], "f4", ("t",) + tuple(coord_names)
         )
-        var_dst[:] = np.array(var)
+        match np.array(var).ndim:  # could not find a more elegant solution
+            case 3:
+                var_dst[:, :, :] = np.array(var)
+            case 2:
+                var_dst[:, :] = np.array(var)
+            case 1:
+                var_dst[:] = np.array(var)
 
     file_dst.close()
 

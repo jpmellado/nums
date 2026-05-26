@@ -5,8 +5,7 @@ import matplotlib.pyplot as plt
 from pynums.pdes.timemarching import *
 from pynums.pdes.checkpointing import *
 from pynums.pdes.postprocessing import *
-
-# from iodata import *
+from pynums.iodata import *
 
 # Define the temporal grid
 tmin = 0.0  # Initial time
@@ -143,4 +142,14 @@ def rhs(u, t):  # Right-hand side of evolution equation (tendency)
 if __name__ == "__main__":
     grid, u = preprocessing()
     data = simulation(grid, u)
+    xc = grid[0]  # for clarity
+    yc = grid[1]
+    save_netcdf(
+        data.tchecked,
+        [yc[:, 0], xc[0, :]],
+        ["y", "x"],
+        [data.uchecked],
+        ["u"],
+        "advection",
+    )
     postprocessing(grid, data)
