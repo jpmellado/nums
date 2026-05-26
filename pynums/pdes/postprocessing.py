@@ -34,6 +34,26 @@ def PlotCurves(x, data):
 
     return fig, axs
 
+def AnimCurves(x, data):
+
+    fig, axs = plt.subplots(1, 1, figsize=figsize11)
+    axs.spines["left"].set_position(("axes", -0.03))
+    axs.spines["bottom"].set_position(("axes", -0.03))
+    axs.set_xlim([x[0], x[-1]])
+    axs.set_xticks(np.linspace(x[0], x[-1], num=5))
+    axs.set_xlabel(r"position $x$")
+    axs.set_ylabel(r"function $u$")
+
+    lines = []
+    for item in range(len(data.tchecked)):
+        line, = plt.plot(x, data.uchecked[item], color='darkred', animated=True)
+        if item == 0: # In case you want to plot the initial value
+            plt.plot(x, data.uchecked[item])
+        lines.append([line])
+
+    ani = animation.ArtistAnimation(fig, lines, interval=40, blit=True, repeat_delay=1000)
+
+    return fig, axs, ani
 
 def PlotContours(grid, data, levels):
     xc = grid[0]  # for clarity
@@ -73,6 +93,6 @@ def AnimContours(grid, data):
             plt.pcolormesh(xc, yc, data.uchecked[item])
         cs.append([c])
 
-    ani = animation.ArtistAnimation(fig, cs, interval=50, blit=True, repeat_delay=1000)
+    ani = animation.ArtistAnimation(fig, cs, interval=40, blit=True, repeat_delay=1000)
 
     return fig, axs, ani
