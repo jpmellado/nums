@@ -5,7 +5,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import nums.ode
+import pynums.ode
 from template import *
 
 # define the function and the normalized solution
@@ -44,13 +44,13 @@ dt = ( tn -t0 )/ n          # Step size
 legends =[]                                     # Create list for the schemes
 schemes =[]
 legends.append( "Euler" )
-schemes.append( nums.ode.Euler )
+schemes.append( pynums.ode.Euler )
 legends.append( "Adams-Bashforth 2" )
-schemes.append( nums.ode.AdamsBashforth2 )
+schemes.append( pynums.ode.AdamsBashforth2 )
 legends.append( "Runge-Kutta 2" )
-schemes.append( nums.ode.RungeKutta2 )
+schemes.append( pynums.ode.RungeKutta2 )
 # legends.append( "Runge-Kutta 3" )
-# schemes.append( nums.ode.RungeKutta3 )
+# schemes.append( pynums.ode.RungeKutta3 )
 
 u = [ s(f,t0,u0,dt,n) for s in schemes ]        # Integrate 
 
@@ -77,7 +77,7 @@ ns = [ 13, 8, 3]                    # Number of steps
 dts= [ ( tn -t0 )/ n for n in ns]   # Step size
 
 # Numerical solutions for different time steps
-u = [ nums.ode.Euler(f,t0,u0,dts[i],ns[i]) for i in range(len(ns)) ]
+u = [ pynums.ode.Euler(f,t0,u0,dts[i],ns[i]) for i in range(len(ns)) ]
 
 for it in range(len(ns)):           # Plot
     plt.plot( u[it][0], u[it][1], 'o', label = r'$\Delta t={:3.1f}$'.format(dts[it]) )
@@ -102,7 +102,7 @@ ns = [ 7, 14, 28 ]                  # Number of steps
 dts= [ ( tn -t0 )/ n for n in ns]   # Step size
 
 # Numerical solution
-u = [ nums.ode.Euler(f,t0,u0,dts[i],ns[i]) for i in range(len(ns)) ]
+u = [ pynums.ode.Euler(f,t0,u0,dts[i],ns[i]) for i in range(len(ns)) ]
 
 for it in range(len(ns)):           # Plot
     plt.plot( u[it][0], u[it][1], 'o', label = r'$\Delta t={:3.2f}$'.format(dts[it]) )
@@ -139,9 +139,9 @@ ue = sol(te)
 legends =[]                                     # Create list for the schemes
 schemes =[]
 legends.append( "Euler" )
-schemes.append( nums.ode.Euler )
+schemes.append( pynums.ode.Euler )
 legends.append( "Runge-Kutta 3" )
-schemes.append( nums.ode.RungeKutta3 )
+schemes.append( pynums.ode.RungeKutta3 )
 
 u = [ s(f,t0,u0,dt,n) for s in schemes ]        # Integrate 
 

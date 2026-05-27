@@ -1,3 +1,6 @@
+# Own style sheet
+# Play with available ones in matplotlib
+
 from matplotlib import rc
 
 rc("text", usetex=True)  # Use latex
