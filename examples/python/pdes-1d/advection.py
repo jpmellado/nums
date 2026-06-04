@@ -4,14 +4,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pynums.pdes.timemarching import *
 from pynums.pdes.checkpointing import *
-from pynums.pdes.postprocessing import PlotCurves
+from pynums.pdes.postprocessing import *
 
 # from iodata import *
 
 # Define the temporal grid
 tmin = 0.0  # Initial time
-tmax = 8.0  # Final time
-tcheck = 2.0  # Time interval to checkpoint data
+tmax = 2.0  # Final time
+tcheck = 0.05  # Time interval to checkpoint data
 
 # Define the spatial grid, uniformly spaced
 xmin = -1.0
@@ -66,7 +66,8 @@ def simulation(x, u):
 
 
 def postprocessing(x, data):
-    fig, axs = PlotCurves(x, data)
+    # fig, axs = PlotCurves(x, data)
+    fig, axs, ani = AnimCurves(x, data)
 
     cnum = advectionNumber(x, velocity, timescheme.dt)  # Calculate values with actual delta_t
     axs.set_title(
@@ -75,13 +76,12 @@ def postprocessing(x, data):
         )
     )
 
-    # Add exact solution as reference
-    t = data.tchecked[-1]
-    f = reference(x - velocity * t)
-    f = np.where(x < x[0] + velocity * t, f, 0.0)
-
-    ref = axs.plot(x, f, color="black", label=r"reference")
-    axs.legend()
+    # # Add exact solution as reference
+    # t = data.tchecked[-1]
+    # f = reference(x - velocity * t)
+    # f = np.where(x < x[0] + velocity * t, f, 0.0)
+    # ref = axs.plot(x, f, color="black", label=r"reference")
+    # axs.legend()
 
     plt.tight_layout(pad=0.1)
     plt.savefig("advection.pdf", bbox_inches="tight")
