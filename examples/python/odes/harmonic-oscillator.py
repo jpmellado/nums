@@ -16,27 +16,29 @@ omega = 2.0 * np.pi / period
 
 ###########################################################
 def reference(t):
-    return [np.sin(omega * t), omega * np.cos(omega * t)]
+    return np.sin(omega * t), omega * np.cos(omega * t)
 
 
 def preprocessing():
     # Construct initial condition
-    u = reference(tmin)
+    X, Y = reference(tmin)
 
-    return u
+    return [X, Y]
 
 
-def simulation(u0):
+def simulation(state0):
     dt = (tmax - tmin) / num_iterations  # Step size
-    t, u = odes.RungeKutta3(rhs, tmin, u0, dt, num_iterations)
+    t, state = odes.RungeKutta3(rhs, tmin, state0, dt, num_iterations)
 
-    return t, u
+    return t, state
 
 
 def postprocessing(t, u):
-    plt.rcParams["axes.spines.top"] = False  # Additional plotting properties for this program
+    plt.rcParams["axes.spines.top"] = (
+        False  # Additional plotting properties for this program
+    )
     plt.rcParams["axes.spines.right"] = False
-    
+
     fig_id = 0
     tag = "harmonic-oscillator"
 
@@ -73,9 +75,9 @@ def postprocessing(t, u):
 
 
 ###########################################################
-def rhs(u, t):  # Right-hand side of evolution equation (tendency)
-    X = u[0]  # define pointers for readability
-    Y = u[1]
+def rhs(state, t):  # Right-hand side of evolution equation (tendency)
+    X = state[0]  # create views (pointers) for readability
+    Y = state[1]
 
     dXdt = Y
     dYdt = -(omega**2) * X
@@ -85,6 +87,6 @@ def rhs(u, t):  # Right-hand side of evolution equation (tendency)
 
 ###########################################################
 if __name__ == "__main__":
-    u = preprocessing()
-    t, u = simulation(u)
-    postprocessing(t, u)
+    state = preprocessing()
+    t, state = simulation(state)
+    postprocessing(t, state)
