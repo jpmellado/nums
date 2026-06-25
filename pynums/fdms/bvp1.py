@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.linalg
 
-# Inverts a finite-difference approximation to solve a boundary value problem.
+# Inverts a finite-difference approximation to 1. order derivative to solve a boundary value problem.
 
 
 def bvp1_e11b(f):
