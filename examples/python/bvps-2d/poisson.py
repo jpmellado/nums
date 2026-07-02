@@ -9,87 +9,43 @@ import matplotlib.pyplot as plt
 from pynums.fdms.bvp2 import *
 from pynums.template import *
 
-TypesToShow = []
-TypesToShow += ["bvp1d"]
-# TypesToShow += ['bvp2d']
+# Define the spatial grid, uniformly spaced
+xmin = 0.0
+xmax = 2.0
+nx = 6
+ymin = 0.0
+ymax = 1.0
+ny = 5
 
-###############################################################################
-tag = "bvp1d"
-if tag in TypesToShow:
-    fig_id = 0
 
-    # Input data
-    n = 20
-    u1 = 0.0  # Dirichlet boundary condition at x_1
-    un = 1.0  # Dirichlet boundary condition at x_n
+# Define the problem: source term
+def s(x, y):  # trigonometric function for dirichlet conditions
+    x = grid[0]  # for clarity
+    y = grid[1]
 
-    def s(x):  # Define source term
-        s = np.empty(np.size(x))
-        s = 10.0 * np.sin(np.pi * x)
-        return s
+    s = np.empty_like(x)
+    s = np.sin(np.pi * x / xmax) * np.sin(np.pi * y / ymax)
+    return s
 
+
+###########################################################
+def preprocessing():
     # Create grid
-    x = np.linspace(0.0, 1.0, n)
-    h = (x[-1] - x[0]) / (n - 1)
+    x1 = np.linspace(xmin, xmax, nx)
+    y1 = np.linspace(ymin, ymax, ny)
+    grid = np.meshgrid(x1, y1)
 
-    # Create forcing term
-    b = s(x) * h**2
+    return grid
 
-    # Solve the problem
-    u = bvp2_e121(b, u1, un)
 
-    #################################################
-    # Plotting
-    fig_id = fig_id + 1
-    fig = plt.figure(figsize=figsize11)
+###########################################################
+hx = (xmax - xmin) / (nx - 1)  # define global variable used below in rhs
+hy = (ymax - ymin) / (ny - 1)
 
-    plt.plot(
-        x,
-        u,
-    )
-    plt.xlabel(r"Horizontal distance $x$")
-    plt.ylabel(r"Temperature $u$")
-    plt.grid()
-    plt.tight_layout(pad=0.1)
 
-    plt.savefig("{}.pdf".format(tag + "-" + str(fig_id)), bbox_inches="tight")
-
-    #################################################
-    fig_id = fig_id + 1
-    fig = plt.figure(figsize=figsize11)
-
-    plt.plot(x, s(x), "C1")
-    plt.xlabel(r"Horizontal distance $x$")
-    plt.ylabel(r"Heat source $s$")
-    plt.grid()
-    plt.tight_layout(pad=0.1)
-
-    plt.savefig("{}.pdf".format(tag + "-" + str(fig_id)), bbox_inches="tight")
-
-###############################################################################
-tag = "bvp2d"
-if tag in TypesToShow:
-    fig_id = 0
-
-    # Input data
-    nx = 6
-    lx = 2.0
-    ny = 5
-    ly = 1.0
-    # nx = 20; lx = 2.0
-    # ny = 20; ly = 1.0
-
-    def s(x, y):  # Define source term
-        s = np.empty_like(x)
-        s = np.sin(np.pi * x / lx) * np.sin(np.pi * y / ly)
-        return s
-
-    # Create grid
-    x1 = np.linspace(0.0, lx, nx)
-    hx = (x1[-1] - x1[0]) / (nx - 1)
-    y1 = np.linspace(0.0, ly, ny)
-    hy = (y1[-1] - y1[0]) / (ny - 1)
-    x, y = np.meshgrid(x1, y1)
+def solve(grid, s):
+    x = grid[0]  # for clarity
+    y = grid[1]
 
     # Create array for the field
     u = np.empty_like(x)
@@ -138,7 +94,14 @@ if tag in TypesToShow:
     sol = scipy.linalg.solve(A, b)
     u[1:-1, 1:-1] = sol.reshape((ny - 2, nx - 2))
 
-    #################################################
+    return u
+
+def postprocessing(grid, u, s):
+    x = grid[0]  # for clarity
+    y = grid[1]
+
+    fig_id = 0
+
     fig_id = fig_id + 1
     fig = plt.figure(figsize=figsize11)
 
@@ -148,22 +111,29 @@ if tag in TypesToShow:
     plt.title(r"solution of $\nabla^2u +s=0$")
     plt.grid()
     plt.colorbar(c, label=r"$u$")
-    plt.tight_layout(pad=0.1)
 
-    plt.savefig("{}.pdf".format(tag + str(fig_id)), bbox_inches="tight")
+    plt.tight_layout(pad=0.1)
+    plt.savefig("{}.pdf".format("poisson-" + str(fig_id)), bbox_inches="tight")
 
     #################################################
     fig_id = fig_id + 1
     fig = plt.figure(figsize=figsize11)
 
-    c = plt.contourf(x, y, source)
+    c = plt.contourf(x, y, s(x, y))
     plt.xlabel(r"Horizontal distance $x$")
     plt.ylabel(r"Horizontal distance $y$")
     plt.title(r"source $s$")
     plt.grid()
     plt.colorbar(c, label=r"$s$")
+
     plt.tight_layout(pad=0.1)
+    plt.savefig("{}.pdf".format("poisson-" + str(fig_id)), bbox_inches="tight")
 
-    plt.savefig("{}.pdf".format(tag + str(fig_id)), bbox_inches="tight")
+    plt.show()
 
-plt.show()
+
+###########################################################
+if __name__ == "__main__":
+    grid = preprocessing()
+    u = solve(grid, s)
+    postprocessing(grid, u, s)

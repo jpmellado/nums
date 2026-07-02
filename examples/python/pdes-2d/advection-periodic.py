@@ -13,12 +13,8 @@ tmax = 2.0  # Final time
 tcheck = 0.05  # Time interval to checkpoint data
 
 # Define the spatial grid, uniformly spaced
-xmin = -2.0
-xmax = 2.0
-nx = 79
-ymin = -1.0
-ymax = 1.0
-ny = 39
+xmin = -2.0; xmax = 2.0; nx = 79
+ymin = -1.0; ymax = 1.0; ny = 39
 
 # Define the problem
 velocity = 1.0
