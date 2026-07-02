@@ -72,9 +72,10 @@ def bvp2_e121_dn(f, alpha, beta):  # dirichlet-neumann conditions
 
     return u
 
+
 def bvp2extended_e121_nn(f, lambda1, alpha, beta):  # neumann-neumann conditions
     # Solves the BVP
-    #       u''_j-lambda1^2u_j=f_j,   j = 2,...n-1
+    #       u''_j-lambda1 u_j=f_j,   j = 2,...n-1
     #       u'_1 = alpha
     #       u'_n = beta
     # using a explicit formulation with centered formulas
@@ -88,11 +89,11 @@ def bvp2extended_e121_nn(f, lambda1, alpha, beta):  # neumann-neumann conditions
     u = np.zeros_like(f)
 
     # Create system array
-    A = np.diag(np.full(n, -(2.0+lambda1)))  # Create array and fill main diagonal
+    A = np.diag(np.full(n, -(2.0 + lambda1)))  # Create array and fill main diagonal
     np.fill_diagonal(A[1:, :], np.full(n - 1, 1.0))  # Fill lower diagonal
     np.fill_diagonal(A[:, 1:], np.full(n - 1, 1.0))  # Fill upper diagonal
     A[0, 0] = -1.0  # correction to impose neumman condition
-    A[-1, -2] = 1.0  # correction to impose neumman condition
+    A[-1, -2:] = [-1.0, 1.0]  # correction to impose neumman condition
 
     # add boundary conditions to forcing
     f1 = np.copy(f)
