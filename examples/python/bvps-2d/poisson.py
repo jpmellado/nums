@@ -12,10 +12,10 @@ from pynums.template import *
 # Define the spatial grid, uniformly spaced
 xmin = 0.0
 xmax = 2.0
-nx = 6
+nx = 20
 ymin = 0.0
 ymax = 1.0
-ny = 5
+ny = 10
 
 
 # Define the problem: source term
@@ -24,7 +24,7 @@ def s(x, y):  # trigonometric function for dirichlet conditions
     y = grid[1]
 
     s = np.empty_like(x)
-    s = np.sin(np.pi * x / xmax) * np.sin(np.pi * y / ymax)
+    s = np.sin(np.pi * x / xmax) ** 2 * np.sin(np.pi * y / ymax) ** 2
     return s
 
 
@@ -96,6 +96,7 @@ def solve(grid, s):
 
     return u
 
+
 def postprocessing(grid, u, s):
     x = grid[0]  # for clarity
     y = grid[1]
@@ -104,13 +105,11 @@ def postprocessing(grid, u, s):
 
     fig_id = fig_id + 1
     fig = plt.figure(figsize=figsize11)
+    plt.title(r"solution of $\nabla^2u +s=0$")
 
     c = plt.contourf(x, y, u)
-    plt.xlabel(r"Horizontal distance $x$")
-    plt.ylabel(r"Horizontal distance $y$")
-    plt.title(r"solution of $\nabla^2u +s=0$")
-    plt.grid()
     plt.colorbar(c, label=r"$u$")
+    formatPlot()
 
     plt.tight_layout(pad=0.1)
     plt.savefig("{}.pdf".format("poisson-" + str(fig_id)), bbox_inches="tight")
@@ -118,19 +117,21 @@ def postprocessing(grid, u, s):
     #################################################
     fig_id = fig_id + 1
     fig = plt.figure(figsize=figsize11)
+    plt.title(r"source $s$")
 
     c = plt.contourf(x, y, s(x, y))
-    plt.xlabel(r"Horizontal distance $x$")
-    plt.ylabel(r"Horizontal distance $y$")
-    plt.title(r"source $s$")
-    plt.grid()
     plt.colorbar(c, label=r"$s$")
+    formatPlot()
 
     plt.tight_layout(pad=0.1)
     plt.savefig("{}.pdf".format("poisson-" + str(fig_id)), bbox_inches="tight")
 
     plt.show()
 
+def formatPlot():
+    plt.xlabel(r"Horizontal distance $x$")
+    plt.ylabel(r"Horizontal distance $y$")
+    plt.grid()
 
 ###########################################################
 if __name__ == "__main__":

@@ -19,14 +19,14 @@ def bvp2_e121(f, alpha, beta):
     u = np.zeros_like(f)
 
     # Create system array
-    A = np.diag(np.full(n - 2, 2.0))  # Create array and fill main diagonal
-    np.fill_diagonal(A[1:, :], np.full(n - 3, -1.0))  # Fill lower diagonal
-    np.fill_diagonal(A[:, 1:], np.full(n - 3, -1.0))  # Fill upper diagonal
+    A = np.diag(np.full(n - 2, -2.0))  # Create array and fill main diagonal
+    np.fill_diagonal(A[1:, :], np.full(n - 3, 1.0))  # Fill lower diagonal
+    np.fill_diagonal(A[:, 1:], np.full(n - 3, 1.0))  # Fill upper diagonal
 
     # add boundary conditions to forcing
     f1 = np.copy(f)
-    f1[1] = f[1] + alpha
-    f1[-2] = f[-2] + beta
+    f1[1] = f[1] - alpha
+    f1[-2] = f[-2] - beta
 
     # Solve the system. We use generic routines, but one could use solve_banded
     u[1:-1] = scipy.linalg.solve(A, f1[1:-1], assume_a="banded")
@@ -54,14 +54,14 @@ def bvp2_e121_dn(f, alpha, beta):  # dirichlet-neumann conditions
     u = np.zeros_like(f)
 
     # Create system array
-    A = np.diag(np.full(n - 1, 2.0))  # Create array and fill main diagonal
-    np.fill_diagonal(A[1:, :], np.full(n - 2, -1.0))  # Fill lower diagonal
-    np.fill_diagonal(A[:, 1:], np.full(n - 2, -1.0))  # Fill upper diagonal
-    A[-1, -1] = 1.0  # correction to impose neumman condition
+    A = np.diag(np.full(n - 1, -2.0))  # Create array and fill main diagonal
+    np.fill_diagonal(A[1:, :], np.full(n - 2, 1.0))  # Fill lower diagonal
+    np.fill_diagonal(A[:, 1:], np.full(n - 2, 1.0))  # Fill upper diagonal
+    A[-1, -2:] = [-1.0, 1.0]  # correction to impose neumman condition
 
     # add boundary conditions to forcing
     f1 = np.copy(f)
-    f1[1] = f[1] + alpha
+    f1[1] = f[1] - alpha
     f1[-1] = beta
 
     # Solve the system. We use generic routines, but one could use solve_banded
