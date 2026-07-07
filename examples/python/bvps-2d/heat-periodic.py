@@ -1,7 +1,13 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+# Finite difference equations.
+# Steady-state solutions of heat equation lap u + s = 0
+
 import numpy as np
-import scipy.linalg
+from scipy.integrate import simpson
 import matplotlib.pyplot as plt
-from pynums.fdms.bvp2 import *
+from pynums.poisson import *
 from pynums.template import *
 
 # Define the spatial grid, uniformly spaced
@@ -12,8 +18,6 @@ ymin = 0.0
 ymax = 1.0
 ny = 10
 
-print("Not working yet...")
-
 
 # Define the problem
 # source term
@@ -22,9 +26,14 @@ def s(x, y):  # trigonometric function for x-periodic conditions
     y = grid[1]
 
     s = np.empty_like(x)
-    s = np.sin(np.pi * x / xmax) ** 2  # * np.sin(np.pi * y / ymax) ** 2
+    s = np.sin(2.0 * np.pi * x / xmax) * np.sin(np.pi * y / ymax) ** 2
+    # s = np.sin(2.0 * np.pi * x / xmax) * (2.0 * np.pi / xmax) ** 2
 
     return s
+
+
+def s_minus(x, y):
+    return -s(x, y)
 
 
 # neumann boundary conditions
@@ -34,6 +43,9 @@ def bcs0(x):
 
 def bcs1(x):
     return np.ones_like(x)
+
+
+bcs = (bcs0, bcs0)
 
 
 ###########################################################
@@ -51,37 +63,6 @@ hx = (xmax - xmin) / nx  # define global variable used below in rhs
 hy = (ymax - ymin) / (ny - 1)
 
 
-def solve(grid, s):
-    x = grid[0]  # for clarity
-    y = grid[1]
-
-    source = s(x, y)  # source term
-    fs = np.fft.rfft(source)
-
-    u1 = bcs0(x[0, :])  # boundary condition at the bottom
-    fu1 = np.fft.rfft(u1)
-
-    un = bcs0(x[0, :])  # boundary conditions at the top
-    fun = np.fft.rfft(un)
-
-    # solve fft x-transform system for each mode
-    fu = np.empty_like(fs)
-
-    w0 = 2.0j * np.pi / nx / hx
-
-    ki = 0
-    fu[:, ki] = bvp2_e121_dn(fs[:, ki] * hy**2, 0.0, hy * fun[ki])
-
-    for ki in range(1, np.size(fs, 1)):
-        fu[:, ki] = bvp2extended_e121_nn(
-            fs[:, ki] * hy**2, (ki * w0) ** 2 * hy**2, hy * fu1[ki], hy * fun[ki]
-        )
-
-    u = np.fft.irfft(fu)
-
-    return u
-
-
 def postprocessing(grid, u, s):
     x = grid[0]  # for clarity
     y = grid[1]
@@ -97,7 +78,7 @@ def postprocessing(grid, u, s):
     formatPlot()
 
     plt.tight_layout(pad=0.1)
-    plt.savefig("{}.pdf".format("poisson-" + str(fig_id)), bbox_inches="tight")
+    plt.savefig("{}.pdf".format("heat-" + str(fig_id)), bbox_inches="tight")
 
     #################################################
     fig_id = fig_id + 1
@@ -109,19 +90,30 @@ def postprocessing(grid, u, s):
     formatPlot()
 
     plt.tight_layout(pad=0.1)
-    plt.savefig("{}.pdf".format("poisson-" + str(fig_id)), bbox_inches="tight")
+    plt.savefig("{}.pdf".format("heat-" + str(fig_id)), bbox_inches="tight")
 
     plt.show()
 
 
 def formatPlot():
-    plt.xlabel(r"Horizontal distance $x$")
-    plt.ylabel(r"Horizontal distance $y$")
+    plt.xlabel(r"$x$")
+    plt.ylabel(r"$y$")
     plt.grid()
 
 
 ###########################################################
 if __name__ == "__main__":
     grid = preprocessing()
-    u = solve(grid, s)
+    #
+    x = grid[0]  # for clarity
+    y = grid[1]
+    print("Compatibility constraint (both below should be equal).")
+    print("Source integrates to {:f} ".format(simpson(np.sum(s_minus(x, y), axis=1), y[:, 0])))
+    print(
+        "Difference in boundary conditions is {:f}".format(
+            np.sum(bcs[1](x[0, :]) - bcs[0](x[0, :]))
+        )
+    )
+    #
+    u = poisson_periodic(grid, s_minus, bcs)
     postprocessing(grid, u, s)

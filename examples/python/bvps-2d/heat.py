@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Finite difference equations. Steady-state solutions of heat equation
+# Finite difference equations.
+# Steady-state solutions of heat equation lap u + s = 0
 
 import numpy as np
-import scipy.linalg
 import matplotlib.pyplot as plt
-from pynums.fdms.bvp2 import *
 from pynums.template import *
 
 # Define the spatial grid, uniformly spaced
@@ -18,14 +17,24 @@ ymax = 1.0
 ny = 10
 
 
-# Define the problem: source term
+# Define the problem
+# source term
 def s(x, y):  # trigonometric function for dirichlet conditions
     x = grid[0]  # for clarity
     y = grid[1]
 
     s = np.empty_like(x)
     s = np.sin(np.pi * x / xmax) ** 2 * np.sin(np.pi * y / ymax) ** 2
+
     return s
+
+
+def s_minus(x, y):
+    return -s(x, y)
+
+
+# dirichlet boundary conditions
+# to be moved here
 
 
 ###########################################################
@@ -33,7 +42,7 @@ def preprocessing():
     # Create grid
     x1 = np.linspace(xmin, xmax, nx)
     y1 = np.linspace(ymin, ymax, ny)
-    grid = np.meshgrid(x1, y1)
+    grid = np.meshgrid(x1, y1)  # 2-tuple containing xc, yc
 
     return grid
 
@@ -42,8 +51,11 @@ def preprocessing():
 hx = (xmax - xmin) / (nx - 1)  # define global variable used below in rhs
 hy = (ymax - ymin) / (ny - 1)
 
+from pynums.fdms.bvp2 import *
+import scipy.linalg
 
-def solve(grid, s):
+
+def poisson_dd(grid, s):
     x = grid[0]  # for clarity
     y = grid[1]
 
@@ -74,20 +86,12 @@ def solve(grid, s):
     source = s(x, y)
 
     # Create forcing term
-    b = -source[1:-1, 1:-1].flatten()
+    b = source[1:-1, 1:-1].flatten()
 
-    b[0 :: nx - 2] -= (1.0 / hx**2) * u[
-        1 : ny - 1, 0
-    ]  # Dirichlet boundary condition at x_1
-    b[nx - 3 :: nx - 2] -= (1.0 / hx**2) * u[
-        1 : ny - 1, -1
-    ]  # Dirichlet boundary condition at x_n
-    b[: nx - 2] -= (1.0 / hy**2) * u[
-        0, 1 : nx - 1
-    ]  # Dirichlet boundary condition at y_1
-    b[n - (nx - 2) :] -= (1.0 / hy**2) * u[
-        -1, 1 : nx - 1
-    ]  # Dirichlet boundary condition at y_n
+    b[0 :: nx - 2] -= (1.0 / hx**2) * u[1 : ny - 1, 0]  # Dirichlet boundary condition at x_1
+    b[nx - 3 :: nx - 2] -= (1.0 / hx**2) * u[1 : ny - 1, -1]  # Dirichlet boundary condition at x_n
+    b[: nx - 2] -= (1.0 / hy**2) * u[0, 1 : nx - 1]  # Dirichlet boundary condition at y_1
+    b[n - (nx - 2) :] -= (1.0 / hy**2) * u[-1, 1 : nx - 1]  # Dirichlet boundary condition at y_n
     # print(b)
 
     # Solve the system. We use generic routines, but one could use solve_banded
@@ -112,7 +116,7 @@ def postprocessing(grid, u, s):
     formatPlot()
 
     plt.tight_layout(pad=0.1)
-    plt.savefig("{}.pdf".format("poisson-" + str(fig_id)), bbox_inches="tight")
+    plt.savefig("{}.pdf".format("heat-" + str(fig_id)), bbox_inches="tight")
 
     #################################################
     fig_id = fig_id + 1
@@ -124,17 +128,19 @@ def postprocessing(grid, u, s):
     formatPlot()
 
     plt.tight_layout(pad=0.1)
-    plt.savefig("{}.pdf".format("poisson-" + str(fig_id)), bbox_inches="tight")
+    plt.savefig("{}.pdf".format("heat-" + str(fig_id)), bbox_inches="tight")
 
     plt.show()
 
+
 def formatPlot():
-    plt.xlabel(r"Horizontal distance $x$")
-    plt.ylabel(r"Horizontal distance $y$")
+    plt.xlabel(r"$x$")
+    plt.ylabel(r"$y$")
     plt.grid()
+
 
 ###########################################################
 if __name__ == "__main__":
     grid = preprocessing()
-    u = solve(grid, s)
+    u = poisson_dd(grid, s_minus)
     postprocessing(grid, u, s)

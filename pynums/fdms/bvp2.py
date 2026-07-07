@@ -93,13 +93,13 @@ def bvp2extended_e121_nn(f, lambda1, alpha, beta):  # neumann-neumann conditions
     np.fill_diagonal(A[1:, :], np.full(n - 1, 1.0))  # Fill lower diagonal
     np.fill_diagonal(A[:, 1:], np.full(n - 1, 1.0))  # Fill upper diagonal
     A[0, 0] = -1.0  # correction to impose neumman condition
-    A[-1, -2:] = [-1.0, 1.0]  # correction to impose neumman condition
-
+    A[-1, -2:] = [1.0, -1.0]  # correction to impose neumman condition
+    
     # add boundary conditions to forcing
     f1 = np.copy(f)
     f1[0] = alpha
-    f1[-1] = beta
-
+    f1[-1] = -beta
+    
     # Solve the system. We use generic routines, but one could use solve_banded
     u = scipy.linalg.solve(A, f1, assume_a="banded")
 
